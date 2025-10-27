@@ -50,7 +50,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
             Upgrade to Pro
           </h2>
           <p className="text-gray-400 text-sm">
-            You've reached your free limit of 3 canvases
+            You&apos;ve reached your free limit of 3 canvases
           </p>
         </div>
 
