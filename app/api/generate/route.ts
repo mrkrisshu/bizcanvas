@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { generateBusinessCanvas } from '@/lib/geminiClient'
-import { Database } from '@/lib/database.types'
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,8 +11,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized - No auth header' }, { status: 401 })
     }
 
-    // Create Supabase client
-    const supabase = createClient<Database>(
+    // Create Supabase client without generic type
+    const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {

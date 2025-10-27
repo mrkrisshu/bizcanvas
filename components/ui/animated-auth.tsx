@@ -526,7 +526,7 @@ export function AnimatedAuth({ mode, onSubmit, isLoading = false, error = "", ot
           </form>
 
           <div className="text-center text-sm text-muted-foreground mt-8">
-            {isSignIn ? "Don't have an account?" : "Already have an account?"}{" "}
+            {isSignIn ? "Don&apos;t have an account?" : "Already have an account?"}{" "}
             <a href={otherPageLink || (isSignIn ? '/auth/signup' : '/auth/signin')} className="text-foreground font-medium hover:underline">
               {isSignIn ? 'Sign Up' : 'Sign In'}
             </a>
