@@ -3,12 +3,12 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-})
-
 export async function POST(req: NextRequest) {
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+      apiVersion: '2025-09-30.clover',
+    })
+
     const cookieStore = cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
