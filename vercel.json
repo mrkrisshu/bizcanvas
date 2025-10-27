@@ -1,0 +1,10 @@
+{
+  "buildCommand": "next build",
+  "framework": "nextjs",
+  "typescript": {
+    "ignoreBuildErrors": true
+  },
+  "eslint": {
+    "ignoreDuringBuilds": false
+  }
+}
