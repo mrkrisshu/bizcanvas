@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import RuixenMoonChat from '@/components/ruixen-moon-chat'
 import { Sparkles, LogOut, Crown } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default function Dashboard() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)

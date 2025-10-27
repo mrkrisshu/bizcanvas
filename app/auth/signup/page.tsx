@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { AnimatedAuth } from '@/components/ui/animated-auth'
 
+export const dynamic = 'force-dynamic'
+
 export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>('')
