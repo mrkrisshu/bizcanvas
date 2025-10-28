@@ -1,24 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 
 export async function POST(req: NextRequest) {
   try {
+    // Get the authorization header
+    const authHeader = req.headers.get('authorization')
+    
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Unauthorized - No auth header' }, { status: 401 })
+    }
+
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
       apiVersion: '2025-09-30.clover',
     })
 
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    // Create Supabase client with authorization header
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+      {
+        global: {
+          headers: {
+            Authorization: authHeader,
+          },
+        },
+      }
+    )
 
     // Check authentication
     const {
-      data: { session },
-    } = await supabase.auth.getSession()
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
 
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 })
     }
 
     // Create Stripe Checkout Session
@@ -33,8 +50,8 @@ export async function POST(req: NextRequest) {
       mode: 'subscription',
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/dashboard?upgrade=success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/dashboard?upgrade=cancelled`,
-      client_reference_id: session.user.id,
-      customer_email: session.user.email,
+      client_reference_id: user.id,
+      customer_email: user.email,
     })
 
     return NextResponse.json({ url: checkoutSession.url })

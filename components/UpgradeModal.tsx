@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 interface UpgradeModalProps {
   isOpen: boolean
@@ -17,8 +18,20 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
   const handleUpgrade = async () => {
     setLoading(true)
     try {
+      // Get session token
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        console.error('No session found')
+        setLoading(false)
+        return
+      }
+
       const response = await fetch('/api/checkout', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+        },
       })
 
       const data = await response.json()
@@ -26,7 +39,7 @@ export function UpgradeModal({ isOpen, onClose }: UpgradeModalProps) {
       if (data.url) {
         window.location.href = data.url
       } else {
-        console.error('No checkout URL returned')
+        console.error('No checkout URL returned:', data)
         setLoading(false)
       }
     } catch (error) {
